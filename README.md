@@ -2,13 +2,13 @@
     <img width="384" alt="icon of extension" src="./public/img/icon.png">
 </div>
 
-<h1 align="center" style="border:none;">Class Collapse</h1>
+<h1 align="center">Class Collapse</h1>
 
 ## TLDR
 
 **Class Collapse** enhances your coding experience by mimicking VS Code's collapsing feature. This tool becomes essential when dealing with frameworks such as **Tailwind CSS**, known for their extensive usage of utility classes that can often make your code less readable. **Class Collapse** uses regex (can be customized inside settings) to make your coding experience cleaner by collapsing segments of your code, making it significantly easier to read and navigate.
 
-[![ko-fi](./public/img/Ko-fi.png)](https://ko-fi.com/G2G3VPRNX)
+[![ko-fi](./public/img/Ko-fi.png)](https://ko-fi.com/G2G3VPRNX) [![discord](./public/img/Discord.png)](https://discord.gg/fxBRYtpNRv)
 
 ## Features
 
