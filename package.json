@@ -1,0 +1,159 @@
+{
+	"name": "class-collapse",
+	"displayName": "Class Collapse",
+	"description": "Improves code readability by collapsing anything you want",
+	"version": "0.0.1",
+	"icon": "public/img/icon.png",
+	"publisher": "Etsi0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Etsi0/class-collapse"
+	},
+	"engines": {
+		"vscode": "^1.87.0"
+	},
+	"categories": [
+		"Formatters",
+		"Visualization",
+		"Other"
+	],
+	"keywords": [
+		"tailwind",
+		"collapse",
+		"fold",
+		"class",
+		"css"
+	],
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "class-collapse.toggleClassCollapse",
+				"category": "Class Collapse",
+				"title": "Toggle Collapsing"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "class-collapse.toggleClassCollapse",
+				"key": "alt+ctrl+shift+c"
+			}
+		],
+		"configuration": {
+			"title": "Class Collapse",
+			"properties": {
+				"class-collapse.classCollapseToggle": {
+					"order": 0,
+					"type": "boolean",
+					"default": true,
+					"description": "Enables or disables collapsing (includes Diff Editor)"
+				},
+				"class-collapse.disableInDiffEditor": {
+					"order": 1,
+					"type": "boolean",
+					"default": true,
+					"description": "Enables or disables collapsing in Diff Editor"
+				},
+				"class-collapse.regex": {
+					"order": 2,
+					"type": "string",
+					"default": "(class|className)(?:=|:|:\\s)((['\"])([\\s\\S]*?)\\3|{\\s*((['\"`])([\\s\\S]*?)\\6|(?!['\"`])([\\s\\S]*?))\\s*})",
+					"description": "Regex to match"
+				},
+				"class-collapse.regexFlags": {
+					"order": 3,
+					"type": "string",
+					"default": "g",
+					"description": "Regex flags"
+				},
+				"class-collapse.regexGroups": {
+					"order": 4,
+					"type": "array",
+					"default": [
+						4,
+						7,
+						8
+					],
+					"description": "Which regex groups you wish to collapse"
+				},
+				"class-collapse.openCollapseOnLineSelected": {
+					"order": 5,
+					"type": "boolean",
+					"default": true,
+					"description": "If you wish to be able to open the collapse by pressing on the same line as the collapse is on, set it to `true`; otherwise, set it to `false` and press inside the collapse instead."
+				},
+				"class-collapse.collapsedText": {
+					"order": 7,
+					"type": "string",
+					"default": "...",
+					"description": "Text to show when collapsed"
+				},
+				"class-collapse.collapsedTextColor": {
+					"order": 8,
+					"type": "string",
+					"default": "#C3E88DFF",
+					"description": "Color of the collapsed text in hex",
+					"pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$"
+				},
+				"class-collapse.openCollapseOpacity": {
+					"order": 9,
+					"type": "number",
+					"default": 1,
+					"description": "The opacity of expanded collapses",
+					"minimum": 0,
+					"maximum": 1
+				},
+				"class-collapse.supportedLanguages": {
+					"order": 10,
+					"type": "array",
+					"default": [
+						"astro",
+						"html",
+						"javascriptreact",
+						"javascript",
+						"markdown",
+						"php",
+						"svelte",
+						"typescript",
+						"typescriptreact",
+						"vue",
+						"vue-html"
+					],
+					"description": "Supported languages"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run package",
+		"webpack": "webpack --mode development",
+		"webpack-dev": "webpack --mode development --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"test-compile": "tsc -p ./",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "vscode-test"
+	},
+	"devDependencies": {
+		"@types/mocha": "^10.0.6",
+		"@types/node": "18.x",
+		"@types/vscode": "^1.87.0",
+		"@typescript-eslint/eslint-plugin": "^7.0.2",
+		"@typescript-eslint/parser": "^7.0.2",
+		"@vscode/test-cli": "^0.0.6",
+		"@vscode/test-electron": "^2.3.9",
+		"esbuild": "^0.20.2",
+		"eslint": "^8.56.0",
+		"ts-loader": "^9.5.1",
+		"typescript": "^5.3.3",
+		"webpack": "^5.90.3",
+		"webpack-cli": "^5.1.4"
+	}
+}
