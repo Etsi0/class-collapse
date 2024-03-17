@@ -2,7 +2,7 @@
     <img width="384" alt="icon of extension" src="./public/img/icon.png">
 </div>
 
-<h1 align="center">Class Collapse</h1>
+<h1 align="center" class="asdada">Class Collapse</h1>
 
 ## TLDR
 
