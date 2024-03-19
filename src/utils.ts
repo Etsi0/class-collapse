@@ -55,7 +55,7 @@ export function IsRangeSelected(currentEditor: TextEditor, range: Range): boolea
 export function IsLineOfRangeSelected(currentEditor: TextEditor, range: Range): boolean {
 	return !!currentEditor.selections.find(
 		(selection) =>
-			selection.start.line === range.end.line || selection.end.line === range.start.line
+			selection.start.line <= range.end.line && selection.end.line >= range.start.line
 	);
 }
 
