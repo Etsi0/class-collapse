@@ -17,3 +17,5 @@ codeStandard.md
 
 .gitignore
 .yarnrc
+
+**/*.gif
