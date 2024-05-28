@@ -1,4 +1,4 @@
-import { window, TabInputTextDiff, Uri, type TextEditor, Range } from 'vscode';
+import { window, TabInputTextDiff, Uri, type TextEditor, Range, type Position } from 'vscode';
 
 import * as Config from './settings';
 import { Settings } from './settings';
@@ -8,7 +8,10 @@ import { Settings } from './settings';
  * @returns {RegExp} Gets the regex that is saved in settings, otherwise /(?:)/
  */
 export function GetRegex(): RegExp {
-	return RegExp(Config.get<RegExp>(Settings.regex), Config.get<string>(Settings.regexFlags));
+	return RegExp(
+		Config.get<RegExp>(Settings.regex_regex),
+		Config.get<string>(Settings.regex_regexFlags)
+	);
 }
 
 /**
@@ -61,20 +64,67 @@ export function IsLineOfRangeSelected(currentEditor: TextEditor, range: Range): 
 
 /**
  * Gets the range of a collapse
- * @param {TextEditor} currentEditor - The editor that is currently opened
- * @param {any} match - All regex groups
- * @param {number} regexGroup - What regex group that should get collapsed
- * @returns {Range} Object that contains `start`, `end` positions. `start` is always less or equal to `end`
+ * @param { TextEditor } currentEditor - The editor that is currently opened
+ * @param { RegExpExecArray } match - All regex groups
+ * @param { number } regexGroup - What regex group that should get collapsed
+ * @returns { Range } Object that contains `start`, `end` positions. `start` is always less or equal to `end`
  * @example
  * CollapseRange(currentEditor, match, 8, true)
  */
-export function CollapseRange(currentEditor: TextEditor, match: any, regexGroup: number): Range {
+export function CollapseRange(
+	currentEditor: TextEditor,
+	match: RegExpExecArray,
+	regexGroup: number,
+	close: boolean
+): Range[] {
 	const match1 = match[0];
 	const text = match[regexGroup];
-	const startIndex = match1.indexOf(text);
+	let newText: string[] = [text];
 
-	const startPosition = currentEditor.document.positionAt(match.index + startIndex);
-	const endPosition = currentEditor.document.positionAt(match.index + startIndex + text.length);
+	const filter = Config.get<string[]>(Settings.whitelist_filter);
+	if (close && filter.length !== 0) {
+		const whitelistedWords = GetFullMatches(text, filter) ?? filter;
+		newText = text.split(new RegExp(whitelistedWords.join('|'), 'g'));
+	}
 
-	return new Range(startPosition, endPosition);
+	return newText.reduce<Range[]>((accumulator, currentValue) => {
+		if (currentValue.trim().length === 0) {
+			return accumulator;
+		}
+
+		const startIndex = match1.indexOf(currentValue);
+
+		const startPosition = currentEditor.document.positionAt(match.index + startIndex);
+		const endPosition = currentEditor.document.positionAt(
+			match.index + startIndex + currentValue.length
+		);
+
+		accumulator.push(new Range(startPosition, endPosition));
+
+		return accumulator;
+	}, []);
+}
+
+/**
+ * Gives you the hole match from the whitelisted items. for example, if you have whitelisted "red" and there is a text-red-500, you will see text-red-500 and not just red
+ * @param { string } str - The string that is about to the collapsed
+ * @param { string[] } filter - All the whitelisted words
+ * @returns { string[] | undefined } You will get back an array that contains the full length versions of string that is inside the filter, if there is no matches or `whitelist_showEntireMatch` it `false` you will get `undefined`
+ * @example
+ * GetFullMatches("bg-red-200 outline-blue-700 text-red-500", ["red"]) // ["text-red-500", "bg-red-200"] if `whitelist_showEntireMatch` is `true`, otherwise `undefined`
+ */
+function GetFullMatches(str: string, filter: string[]): string[] | undefined {
+	if (!Config.get<string[]>(Settings.whitelist_showEntireMatch)) {
+		return;
+	}
+
+	const wordFilter: string[] = str
+		.split(new RegExp('\\s|\'|"|`', 'g'))
+		.filter((string, i) => filter.some((item, j) => string.indexOf(item) !== -1));
+
+	if (wordFilter.length === 0) {
+		return;
+	}
+
+	return wordFilter;
 }

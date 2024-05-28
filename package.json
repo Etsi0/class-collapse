@@ -2,7 +2,7 @@
 	"name": "class-collapse",
 	"displayName": "Class Collapse",
 	"description": "Improves code readability by collapsing anything you want",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"icon": "public/img/icon.png",
 	"publisher": "Etsi0",
 	"repository": {
@@ -31,101 +31,140 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "class-collapse.toggleClassCollapse",
+				"command": "class-collapse.functionality.enable",
 				"category": "Class Collapse",
 				"title": "Toggle Collapsing"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "class-collapse.toggleClassCollapse",
+				"command": "class-collapse.functionality.enable",
 				"key": "alt+ctrl+shift+c"
 			}
 		],
-		"configuration": {
-			"title": "Class Collapse",
-			"properties": {
-				"class-collapse.classCollapseToggle": {
-					"order": 0,
-					"type": "boolean",
-					"default": true,
-					"description": "Enables or disables collapsing (includes Diff Editor)"
-				},
-				"class-collapse.disableInDiffEditor": {
-					"order": 1,
-					"type": "boolean",
-					"default": true,
-					"description": "Enables or disables collapsing in Diff Editor"
-				},
-				"class-collapse.regex": {
-					"order": 2,
-					"type": "string",
-					"default": "(class|className)(?:=|:|:\\s)((['\"])([\\s\\S]*?)\\3|{\\s*((['\"`])([\\s\\S]*?)\\6|(?!['\"`])([\\s\\S]*?))\\s*})",
-					"description": "Regex to match"
-				},
-				"class-collapse.regexFlags": {
-					"order": 3,
-					"type": "string",
-					"default": "g",
-					"description": "Regex flags"
-				},
-				"class-collapse.regexGroups": {
-					"order": 4,
-					"type": "array",
-					"default": [
-						4,
-						7,
-						8
-					],
-					"description": "Which regex groups you wish to collapse"
-				},
-				"class-collapse.openCollapseOnLineSelected": {
-					"order": 5,
-					"type": "boolean",
-					"default": true,
-					"description": "If you wish to be able to open the collapse by pressing on the same line as the collapse is on, set it to `true`; otherwise, set it to `false` and press inside the collapse instead."
-				},
-				"class-collapse.collapsedText": {
-					"order": 7,
-					"type": "string",
-					"default": "...",
-					"description": "Text to show when collapsed"
-				},
-				"class-collapse.collapsedTextColor": {
-					"order": 8,
-					"type": "string",
-					"default": "#C3E88DFF",
-					"description": "Color of the collapsed text in hex",
-					"pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$"
-				},
-				"class-collapse.openCollapseOpacity": {
-					"order": 9,
-					"type": "number",
-					"default": 1,
-					"description": "The opacity of expanded collapses",
-					"minimum": 0,
-					"maximum": 1
-				},
-				"class-collapse.supportedLanguages": {
-					"order": 10,
-					"type": "array",
-					"default": [
-						"astro",
-						"html",
-						"javascriptreact",
-						"javascript",
-						"markdown",
-						"php",
-						"svelte",
-						"typescript",
-						"typescriptreact",
-						"vue",
-						"vue-html"
-					],
-					"description": "Supported languages"
+		"configuration": [
+			{
+				"order": 1,
+				"title": "Functionality",
+				"properties": {
+					"class-collapse.functionality.enable": {
+						"order": 1,
+						"type": "boolean",
+						"default": true,
+						"description": "Enables or disables collapsing (includes Diff Editor)"
+					},
+					"class-collapse.functionality.diffEditor": {
+						"order": 2,
+						"type": "boolean",
+						"default": true,
+						"description": "Enables or disables collapsing in Diff Editor"
+					},
+					"class-collapse.functionality.openCollapseOnLineSelected": {
+						"order": 3,
+						"type": "boolean",
+						"default": true,
+						"description": "If you wish to be able to open the collapse by pressing on the same line as the collapse is on, set it to `true`; otherwise, set it to `false` and press inside the collapse instead."
+					}
+				}
+			},
+			{
+				"order": 2,
+				"title": "Regex",
+				"properties": {
+					"class-collapse.regex.regex": {
+						"order": 1,
+						"type": "string",
+						"default": "(class|className)(?:=|:|:\\s)((['\"])([\\s\\S]*?)\\3|{\\s*((['\"`])([\\s\\S]*?)\\6|(?!['\"`])([\\s\\S]*?))\\s*})",
+						"description": "Regex to match"
+					},
+					"class-collapse.regex.regexFlags": {
+						"order": 2,
+						"type": "string",
+						"default": "g",
+						"description": "Regex flags"
+					},
+					"class-collapse.regex.regexGroups": {
+						"order": 3,
+						"type": "array",
+						"default": [
+							4,
+							7,
+							8
+						],
+						"description": "Which regex groups you wish to collapse"
+					}
+				}
+			},
+			{
+				"order": 3,
+				"title": "Whitelist",
+				"properties": {
+					"class-collapse.whitelist.filter": {
+						"order": 1,
+						"type": "array",
+						"default": [],
+						"description": "Lets you decide what you don't want to collapse inside a collapse"
+					},
+					"class-collapse.whitelist.showEntireMatch": {
+						"order": 2,
+						"type": "boolean",
+						"default": true,
+						"description": "If the whitelist filter includes \"blue\". This option will ensure that you see the entire match; for example, `text-blue-500` instead of just `blue`"
+					}
+				}
+			},
+			{
+				"order": 4,
+				"title": "Style",
+				"properties": {
+					"class-collapse.style.placeholderText": {
+						"order": 1,
+						"type": "string",
+						"default": "...",
+						"description": "Text to show when collapsed"
+					},
+					"class-collapse.style.placeholderTextColor": {
+						"order": 2,
+						"type": "string",
+						"default": "#C3E88DFF",
+						"description": "Color of the collapsed text in hex",
+						"pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$"
+					},
+					"class-collapse.style.openCollapseOpacity": {
+						"order": 3,
+						"type": "number",
+						"default": 1,
+						"description": "The opacity of expanded collapses",
+						"minimum": 0,
+						"maximum": 1
+					}
+				}
+			},
+			{
+				"order": 5,
+				"title": "languages",
+				"properties": {
+					"class-collapse.languages.supportedLanguages": {
+						"order": 1,
+						"type": "array",
+						"default": [
+							"astro",
+							"html",
+							"javascriptreact",
+							"javascript",
+							"markdown",
+							"php",
+							"svelte",
+							"typescript",
+							"typescriptreact",
+							"vue",
+							"vue-html"
+						],
+						"description": "Supported languages"
+					}
 				}
 			}
-		}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",

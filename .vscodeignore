@@ -19,6 +19,4 @@ codeStandard.md
 .yarnrc
 
 # these images/gifs are only in the readme and doesn't need to be in the extension
-public/img/Discord.png
-public/img/Ko-fi.png
-public/gif/openCollapses.gif
+public/readme/**

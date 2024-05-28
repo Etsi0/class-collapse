@@ -1,8 +1,10 @@
 import { Range, type TextEditor } from 'vscode';
 
 import { OpenCollapseDecorationType, CollapseDecorationType } from './decoration';
+
 import * as Config from './settings';
 import { Settings } from './settings';
+
 import {
 	GetRegex,
 	IsOpenedWithDiffEditor,
@@ -21,9 +23,11 @@ let regex: RegExp;
 let regExGroups: number[];
 
 // Functionality
-let classCollapseToggle: boolean;
-let disableInDiffEditor: boolean;
+let enable: boolean;
+let diffEditor: boolean;
 let openCollapseOnLineSelected: boolean;
+
+// Languages
 let supportedLanguages: string[];
 
 // Open collapses and collapses
@@ -43,21 +47,23 @@ export function SetCurrentEditor(textEditor: TextEditor | undefined) {
 	UpdateDecorations();
 }
 
-export function ToggleClassCollapse() {
-	Config.set(Settings.classCollapseToggle, !classCollapseToggle);
+export function Enable() {
+	Config.set<boolean>(Settings.functionality_enable, !enable);
 	UpdateDecorations();
 }
 
 export function LoadConfig() {
 	// Regex
 	regex = GetRegex();
-	regExGroups = Config.get<number[]>(Settings.regexGroups);
+	regExGroups = Config.get<number[]>(Settings.regex_regexGroups);
 
 	// Functionality
-	classCollapseToggle = Config.get<boolean>(Settings.classCollapseToggle);
-	disableInDiffEditor = Config.get<boolean>(Settings.disableInDiffEditor);
-	openCollapseOnLineSelected = Config.get<boolean>(Settings.openCollapseOnLineSelected);
-	supportedLanguages = Config.get<string[]>(Settings.supportedLanguages);
+	enable = Config.get<boolean>(Settings.functionality_enable);
+	diffEditor = Config.get<boolean>(Settings.functionality_diffEditor);
+	openCollapseOnLineSelected = Config.get<boolean>(
+		Settings.functionality_openCollapseOnLineSelected
+	);
+	supportedLanguages = Config.get<string[]>(Settings.languages_supportedLanguages);
 
 	// Open collapses and collapses
 	openCollapseDecorationType.dispose();
@@ -70,10 +76,10 @@ export function LoadConfig() {
 
 export function UpdateDecorations() {
 	if (
-		!classCollapseToggle ||
+		!enable ||
 		!currentEditor ||
 		!supportedLanguages.includes(currentEditor.document.languageId) ||
-		(disableInDiffEditor && IsOpenedWithDiffEditor(currentEditor.document.uri))
+		(diffEditor && IsOpenedWithDiffEditor(currentEditor.document.uri))
 	) {
 		return;
 	}
@@ -81,9 +87,9 @@ export function UpdateDecorations() {
 	openCollapseRanges = [];
 	collapseRanges = [];
 
-	let match: any;
+	let match: RegExpExecArray | null;
 	const documentText = currentEditor.document.getText();
-	while ((match = regex.exec(documentText))) {
+	outerLoop: while ((match = regex.exec(documentText))) {
 		const validRegExGroup: number | undefined = regExGroups.find(
 			(regExGroup) => !(match && !match[regExGroup])
 		);
@@ -91,17 +97,20 @@ export function UpdateDecorations() {
 			continue;
 		}
 
-		const range = CollapseRange(currentEditor, match, validRegExGroup);
-		const openRange = CollapseRange(currentEditor, match, 0);
+		const range = CollapseRange(currentEditor, match, validRegExGroup, true);
+		const openRange = CollapseRange(currentEditor, match, 0, false);
 
-		if (
-			IsRangeSelected(currentEditor, range) ||
-			(openCollapseOnLineSelected && IsLineOfRangeSelected(currentEditor, openRange))
-		) {
-			openCollapseRanges.push(range);
-			continue;
+		for (let i = 0; i < range.length; i++) {
+			if (
+				IsRangeSelected(currentEditor, range[i]) ||
+				(openCollapseOnLineSelected && IsLineOfRangeSelected(currentEditor, openRange[0]))
+			) {
+				openCollapseRanges.push(range[i]);
+				continue outerLoop;
+			}
+
+			collapseRanges.push(range[i]);
 		}
-		collapseRanges.push(range);
 	}
 
 	currentEditor.setDecorations(openCollapseDecorationType, openCollapseRanges);
