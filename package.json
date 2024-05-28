@@ -2,7 +2,7 @@
 	"name": "class-collapse",
 	"displayName": "Class Collapse",
 	"description": "Improves code readability by collapsing anything you want",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"icon": "public/img/icon.png",
 	"publisher": "Etsi0",
 	"repository": {
