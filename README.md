@@ -8,8 +8,6 @@
 
 **Class Collapse** enhances your coding experience by mimicking VS Code's collapsing feature. This tool becomes essential when dealing with frameworks such as **Tailwind CSS**, known for their extensive usage of utility classes that can often make your code less readable. **Class Collapse** uses regex (can be customized inside settings) to make your coding experience cleaner by collapsing segments of your code, making it significantly easier to read and navigate.
 
-[![ko-fi](./public/readme/img/Ko-fi.png)](https://ko-fi.com/G2G3VPRNX) [![discord](./public/readme/img/Discord.png)](https://discord.gg/fxBRYtpNRv)
-
 ## Features
 
 To toggle the **Class Collapse** extension, open the Command Palette with `Shift+Ctrl+P`, search for `Class Collapse: Toggle Collapsing`, or use the shortcut `Alt+Ctrl+Shift+C`. This key combination is chosen to avoid overriding any default bindings and avoid accidental activations or deactivations, with C also representing **C**lass **C**ollapse.
