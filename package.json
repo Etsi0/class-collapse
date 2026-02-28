@@ -2,7 +2,7 @@
 	"name": "class-collapse",
 	"displayName": "Class Collapse",
 	"description": "Improves code readability by collapsing anything you want",
-	"version": "0.0.8",
+	"version": "1.0.20260228",
 	"icon": "public/img/icon.png",
 	"publisher": "Etsi0",
 	"repository": {
@@ -74,7 +74,7 @@
 					"class-collapse.regex.regex": {
 						"order": 1,
 						"type": "string",
-						"default": "(class|className)(?:=|:|:\\s)((['\"])([\\s\\S]*?)\\3|\\{\\s*?.*?((['\"`])([\\s\\S]*?)\\6|\\(([\\s\\S]*?)\\))\\s*?\\})",
+						"default": "(class|className)(?:=|:|:\\s)((['\"])([\\s\\S]*?)\\3|\\{\\s*?((['\"`])([\\s\\S]*?)\\6|.*?\\(([\\s\\S]*?)\\))\\s*?\\})",
 						"description": "Regex to match"
 					},
 					"class-collapse.regex.regexFlags": {
